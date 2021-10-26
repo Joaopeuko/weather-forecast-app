@@ -1,10 +1,9 @@
 import datetime
 import json
-import sqlite3
+
 from flask_caching import Cache
-from flask import Flask, request, abort
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.exc import SQLAlchemyError
 
 from lib.openweather import OpenWeather
 
@@ -15,11 +14,8 @@ config = {
 }
 
 app = Flask(__name__)  # It creates the Flask App
-
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///weather_database.sqlite'
-# app.config['SQLALCHEMY_POOL_SIZE'] = 5
-db = SQLAlchemy(app)
+db = SQLAlchemy(app)  # Database handler.
 
 
 class Weather(db.Model):
@@ -33,12 +29,10 @@ class Weather(db.Model):
         self.datetime_request = datetime_request
         self.json_data = json_data
 
-    def __repr__(self):
-        return '<User %r>' % self.username
 
-
-db.create_all()
-db.session.commit()
+# It creates the database if do not exist.
+# db.create_all()
+# db.session.commit()
 
 
 # Tell Flask to use the above-defined config
@@ -52,46 +46,30 @@ weather = OpenWeather()  # It creates the class to handle Open Weather.
 @app.route('/weather', methods=['POST'])
 def results():
     """
-    The function receives a string containing a city name and returns the weather information.
-    Also, it caches the information.
-    :param city_name: str
-        It receives a request from the front end containing a city name.
+    The function receives a for containing a city id and post it to database.
     :return: dict
-        returns a dictionary containing information about the weather of a determined city.
+        returns the status code.
 
     """
     city_id = request.form['city_id']
     result = weather.get_weather_by_city(city_id)
 
-    if result['city'] == 'city_name_invalid':
-        abort(404)  # In case the city name is invalid it returns an error 404.
-
     weather_info = Weather(str(city_id), str(datetime.datetime.now().timestamp()), str(result))
     db.session.add(weather_info)
     db.session.commit()
 
-    return '200'
+    return {"status_code": '200'}
 
 
-@app.route('/weather', methods=['GET'])
-def max_values():
+@app.route('/progress/<city_id>', methods=['GET'])
+def progress(city_id):
     """
-    These functions handle the max amount of information needed to be returned to the user from the cached information.
-    If the amount of information
+    These functions returns the number of information stored in the database to be used to calculate the progress
+    in the front end.
     :return: json
-        It returns a JSON that contains a dictionary about the last results.
+        It returns a scalar containing the size of the database.
     """
-
-    if 'max' in list(request.args.keys()) and request.args['max'].isnumeric():
-        max_number = int(request.args['max'])  # It returns the new amount of information the users requested.
-    else:
-        max_number = 5  # The default amount of data returned.
-
-    result = []
-    # It retrieves the newest amount of data requested.
-    for key in reversed(list(cache.cache._cache.keys())[-max_number:]):
-        result.append(cache.get(key))
-    return json.dumps(result)
+    return json.dumps(db.session.query(Weather).count())
 
 
 if __name__ == '__main__':
