@@ -1,0 +1,9 @@
+requests~=2.26.0
+python-dotenv~=0.19.1
+streamlit~=1.0.0
+Flask~=2.0.2
+pytest~=6.2.5
+torch~=1.10.0
+Flask-Caching
+Flask-SQLAlchemy
+SQLAlchemy~=1.4.26
