@@ -2,5 +2,7 @@ requests~=2.26.0
 python-dotenv~=0.19.1
 pytest~=6.2.5
 Flask~=2.0.2
+Flask-Caching
+Flask-SQLAlchemy
 responses~=0.15.0
 coverage

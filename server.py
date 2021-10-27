@@ -78,4 +78,5 @@ def progress(city_id):
 
 
 if __name__ == '__main__':
-    app.run()  # It runs the server.
+    app.run(host="0.0.0.0")  # It runs the server.
+

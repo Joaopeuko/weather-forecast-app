@@ -33,14 +33,13 @@ In requirements.txt you can find the following library's:
 ```python
 requests
 python-dotenv
-streamlit
 Flask
 coverage
 ```
-- requests~=2.26.0
+- requests
 
 Requests are used to create communication between the front end page and the server.
-- python-dotenv~=0.19.1
+- python-dotenv
 
 The library DotEnv is used to hide sensitive information like a public key that is used to retrieve information
 from [Open Weather](https://openweathermap.org/current) API.
@@ -50,12 +49,12 @@ You need to have a file .env with the information like the one below:
 ```python
 API_KEY = Insert_the_API_key_here
 ```
-- streamlit~=1.0.0
+- streamlit
 
 Streamlit is a library used to create the front end of the weather forecast app, it is a library that makes easy 
 to create pages.
 
-- Flask~=2.0.2
+- Flask
 
 Flask is used to create the server and cache information.
 
@@ -70,17 +69,19 @@ To make the weather forecast app work requires two parts, the server, and a fron
 the page files need to be running.
 
 - #### Server:
+Before running the docker-compose do not forget to add your API key to .env that you need to create.
 
 To start the server you need to navigate through the terminal to the folder weather-forecast and type:
 ```python
-python server.py
+docker-compose build web
+docker-compose up web
 ```
 
 - #### Front end page:
 
 To start the front end page you need to navigate through the terminal to the folder weather-forecast and type:
 ```python
-streamlit run index.py
+python request_server.py
 ```
 
 ---
