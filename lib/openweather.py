@@ -23,8 +23,14 @@ class OpenWeather:
         # It used the function get_city_information to call the Open Weather API
         city_information = self.get_city_information(city)
 
+        if city_information['cod'] == '400':  # It checks if the information returned is valid or not.
+            return {'city': 'city_name_invalid', 'weather': 'single_result', 'temperature': 'single_result'}
+
         if city_information['cod'] == '404':  # It checks if the information returned is valid or not.
             return {'city': 'city_name_invalid', 'weather': 'single_result', 'temperature': 'single_result'}
+
+        elif city_information['cod'] == '429':  # It checks if the information returned is valid or not.
+            return {'city': 'surpassed_rate_limit', 'weather': 'single_result', 'temperature': 'single_result'}
         else:
             # It retrieves the temperature from returned Open Weather
             temperature = city_information['main']['temp']

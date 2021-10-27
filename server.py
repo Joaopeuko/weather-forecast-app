@@ -1,5 +1,5 @@
-import datetime
 import json
+import datetime
 
 from flask_caching import Cache
 from flask import Flask, request
@@ -31,8 +31,8 @@ class Weather(db.Model):
 
 
 # It creates the database if do not exist.
-# db.create_all()
-# db.session.commit()
+db.create_all()
+db.session.commit()
 
 
 # Tell Flask to use the above-defined config
@@ -58,7 +58,12 @@ def results():
     db.session.add(weather_info)
     db.session.commit()
 
-    return {"status_code": '200'}
+    if result['city'] == 'city_name_invalid':
+        return 404
+    if result['city'] == 'surpassed_rate_limit':
+        return 429
+    else:
+        return '200'
 
 
 @app.route('/progress/<city_id>', methods=['GET'])
