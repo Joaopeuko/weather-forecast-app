@@ -8,7 +8,7 @@
      - [Library explanation]()
    - [How to use](#how-to-use)
      - [Server](#server)
-     - [Front end page](#front-end-page)
+     - [Script](#script)
    - [Test](#test)
    - [License](#license)
    
@@ -77,7 +77,7 @@ docker-compose build web
 docker-compose up web
 ```
 
-- #### Front end page:
+- #### Script:
 
 To start the front end page you need to navigate through the terminal to the folder weather-forecast and type:
 ```python
